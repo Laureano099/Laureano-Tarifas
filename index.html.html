@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laureano - Precios</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       TOKENS GLOBALES (Flat Design & Alto Contraste)
+    ════════════════════════════════════════════════════════════════ */
+    :root {
+      /* — Paleta base (Deep Black / Flat) — */
+      --bg-page:        #0d1018;
+      --bg-surface:     #141720;
+      --bg-card:        #191d28;
+      --bg-card-hover:  #1f2432;
+
+      /* — Bordes — */
+      --border-subtle:  rgba(255,255,255,0.08);
+      --border-mid:     rgba(255,255,255,0.15);
+
+      /* — Texto — */
+      --text-primary:   #ffffff;
+      --text-secondary: #9ca3af;
+      --text-muted:     #9ca3af;
+
+      /* — Cyan de contraste — */
+      --cyan:           #0be7e7;
+      --cyan-dim:       rgba(34,217,200,0.10);
+		
+      --whit:           #ffffff
+      --white-dim:      rgba(255,255,255,0.15);
+      
+      /* — Acentos por sección (Líneas superiores y badges) — */
+      --col1-accent:    #4aedb4; 
+      --col2-accent:    #a78bfa; 
+      --col3-accent:    #fb923c; 
+      --col-elearn:     #ec4899; 
+
+      /* — Tipografía — */
+      --font-display:   'Outfit', sans-serif;
+      --font-body:      'Inter', sans-serif;
+
+      --card-radius:    12px;
+      --card-pad:       24px;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-weight: 300;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Fondo decorativo sutil */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       NAVEGACIÓN STICKY & SELECTOR DE DIVISAS (Minimalista)
+    ════════════════════════════════════════════════════════════════ */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 16, 24, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+
+    .currency-selector {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 30px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+		/* ═══════════════════════════════════════
+		   Boton Ver Preview
+		═══════════════════════════════════════ */
+	.preview-btn{
+		display:table;
+		margin:16px auto 0;
+		padding:8px 14px;
+		font-size:11px;
+		font-weight:500;
+		text-decoration:none;
+		color:#fff;
+		background:rgba(11,231,231,0.08);
+		border:1px solid rgba(255,255,255,0.12);
+		border-radius:999px;
+		backdrop-filter:blur(6px);
+		transition:all .2s ease;
+		}
+
+	.preview-btn:hover{
+		background:rgba(255,255,255,0.14);
+		border-color:rgba(11,255,255,0.20);
+		transform:translateY(-1px);
+		}
+	  
+		.original-price{
+		  font-size:18px;
+		  color:var(--text-muted);
+		  text-decoration:line-through;
+		  opacity:.7;
+		  margin-bottom:6px;
+		}
+		/* ═══════════════════════════════════════
+		   MARCAS
+		═══════════════════════════════════════ */
+
+		.brands-section{
+		  margin-top:80px;
+		  margin-bottom:60px;
+		  overflow:hidden;
+		}
+
+		.brands-title{
+		  text-align:center;
+		  font-family:var(--font-display);
+		  font-size:22px;
+		  font-weight:600;
+		  margin-bottom:12px;
+		}
+
+		.brands-subtitle{
+		  text-align:center;
+		  color:var(--text-secondary);
+		  font-size:12px;
+		  margin-bottom:32px;
+		}
+
+		.brands-slider{
+		  position:relative;
+		  overflow:hidden;
+		  mask-image:linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+		  -webkit-mask-image:linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+		}
+
+		.brands-track{
+		  display:flex;
+		  width:max-content;
+		  animation:brands-scroll 40s linear infinite;
+		}
+
+		.brands-track:hover{
+		  animation-play-state:paused;
+		}
+
+		.brand-item{
+		  width:140px;
+		  height:80px;
+		  margin:0 18px;
+		  display:flex;
+		  align-items:center;
+		  justify-content:center;
+		  flex-shrink:0;
+		  background:rgba(255,255,255,0.03);
+		  border:1px solid rgba(255,255,255,0.06);
+		  border-radius:10px;
+		}
+
+		.brand-item img{
+		  max-width:90px;
+		  max-height:40px;
+		  opacity:.8;
+		  transition:.2s;
+		  filter:grayscale(100%);
+		}
+
+		.brand-item:hover img{
+		  opacity:1;
+		  filter:none;
+		}
+
+		@keyframes brands-scroll{
+		  from{
+			transform:translateX(0);
+		  }
+		  to{
+			transform:translateX(-50%);
+		  }
+		}
+	  
+    .currency-btn {
+      background: transparent;
+      border: none;
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 400; /* Letra regular, no gruesa */
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .currency-btn.active {
+      background: var(--cyan);
+      color: #000;
+      font-weight: 500;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 28px 100px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ANIMACIÓN DE ENTRADA
+       Para desactivarla: agrega class="no-anim" al <body>
+    ════════════════════════════════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero          { animation: fadeUp 0.6s ease both; }
+    .section-label { animation: fadeUp 0.4s 0.08s ease both; }
+    .col.c1        { animation: fadeUp 0.5s 0.12s ease both; }
+    .col.c2        { animation: fadeUp 0.5s 0.20s ease both; }
+    .col.c3        { animation: fadeUp 0.5s 0.28s ease both; }
+    .signature     { animation: fadeUp 0.5s 0.35s ease both; }
+	  
+	  
+    /* ═══════════════════════════════════════════════════════════════
+       HERO ORIGINAL
+    ════════════════════════════════════════════════════════════════ */
+    .hero {
+      text-align: center;
+      padding: 64px 0 52px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 60px;
+    }
+
+    .logo-slot {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 64px; height: 64px;
+      border: 1px solid var(--border-mid); border-radius: 50%;
+      margin-bottom: 28px; color: var(--text-muted);
+      font-size: 11px; text-transform: uppercase;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 7vw, 76px);
+      font-weight: 300;
+      line-height: 1.08;
+      margin-bottom: 20px;
+    }
+
+    .hero-title strong { font-weight: 600; }
+
+    .hero-title-line {
+      display: block; width: 36px; height: 2px;
+      background: var(--cyan); margin: 0 auto 20px;
+    }
+
+    .hero-sub {
+      font-size: 14px; color: var(--text-secondary);
+      max-width: 440px; margin: 0 auto; line-height: 1.75;
+    }
+
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 24px; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       GRID, COLUMNAS Y CARDS BASE
+    ════════════════════════════════════════════════════════════════ */
+    .cols3 {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 18px; align-items: start;
+    }
+
+    .col { display: flex; flex-direction: column; gap: 12px; }
+
+    .col-header {
+      padding: 18px 22px; background: var(--bg-surface);
+      border: 1px solid var(--border-subtle); border-radius: var(--card-radius);
+    }
+    .col-accent-bar { height: 2px; border-radius: 2px; margin-bottom: 14px; }
+    .col-header-top { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    
+    .col-title { font-family: var(--font-display); font-size: 19px; font-weight: 600; }
+    .col-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      border-radius: var(--card-radius); padding: var(--card-pad);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover { border-color: var(--border-mid); transform: translateY(-2px); }
+
+    .card-top { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .card-name { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+
+    /* ── PRECIOS (Ajustados: Blanco, Bold, Tamaño equilibrado) ── */
+    .price-main {
+      font-family: var(--font-display);
+      font-size: 26px; /* Reducido de 34px/30px */
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .price-alts {
+      font-size: 11px; color: var(--text-muted); margin-bottom: 12px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+
+    .card-divider { border: none; border-top: 1px solid var(--border-subtle); margin: 12px 0; }
+
+    .features { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .features li { font-size: 12px; color: var(--text-secondary); display: flex; gap: 8px; }
+    .feat-check { color: var(--cyan); font-weight: 700; }
+
+    .qty-label { font-size: 11px; color: var(--cyan); margin-bottom: 6px; display: block; font-weight: 500;}
+    .saving { font-size: 11px; color: var(--cyan); opacity: 0.8; margin-top: 8px; }
+
+    .badge {
+      font-size: 10px; font-weight: 500; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 999px;
+    }
+    .badge-popular { border: 1px solid var(--border-mid); color: var(--text-secondary); }
+
+    /* Acentos por clase */
+    .c1 .col-accent-bar { background: var(--col1-accent); }
+    .c1 .badge-type { background: rgba(74,237,180,0.1); color: var(--col1-accent); }
+    .c2 .col-accent-bar { background: var(--col2-accent); }
+    .c2 .badge-type { background: rgba(167,139,250,0.1); color: var(--col2-accent); }
+    .c3 .col-accent-bar { background: var(--col3-accent); }
+    .c3 .badge-type { background: rgba(251,146,60,0.1); color: var(--col3-accent); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOQUES HORIZONTALES (Podcast, Youtube, E-learning)
+    ════════════════════════════════════════════════════════════════ */
+    .hblock { margin-top: 60px; }
+    .hblock-header { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px;}
+    .hblock-accent-bar { width: 3px; height: 36px; border-radius: 2px; }
+    .hblock-titles { flex: 1; }
+    .hblock-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .hblock-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+    .hb-podcast .hblock-accent-bar { background: #60a5fa; }
+    .hb-podcast .badge-type { background: rgba(96,165,250,0.1); color: #60a5fa; }
+	.hb-corporativo .hblock-accent-bar { background: #fcba03; }
+    .hb-corporativo .badge-type { background: rgba(96,165,250,0.1); color: #fcba03; }
+    .hb-youtube .hblock-accent-bar { background: #f87171; }
+    .hb-youtube .badge-type { background: rgba(248,113,113,0.1); color: #f87171; }
+    .hb-elearn .hblock-accent-bar { background: var(--col-elearn); }
+    .hb-elearn .badge-type { background: rgba(236,72,153,0.1); color: var(--col-elearn); }
+
+    .hrow { display: grid; gap: 14px; }
+    .hcard { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--card-radius); padding: 18px 20px; display: flex; flex-direction: column; }
+    .hcard-duration { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
+    .hcard-tagline { font-size: 11.5px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 10px; }
+    .hcard-features { margin-top: auto; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .hcard-features li { font-size: 11.5px; color: var(--text-secondary); display: flex; gap: 7px; }
+
+    .hcard.quote { border: 1px dashed var(--border-mid); align-items: center; justify-content: center; text-align: center; background: transparent; }
+
+    /* ── TABLA COMPARATIVA E-LEARNING ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .compare-col h4 {
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 6px;
+    }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .compare-col li { font-size: 12px; color: var(--text-secondary); display: flex; gap: 6px; align-items: flex-start;}
+    .icon-no { color: #ef4444; font-weight: bold; }
+    .icon-yes { color: var(--cyan); font-weight: bold; }
+
+    .btn-youtube {
+      display: inline-block; background: var(--cyan); color: #000;
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      text-decoration: none; padding: 10px 20px; border-radius: 6px; margin-top: 10px;
+    }
+
+    /* FOOTER Y TASAS (Ocultas al final) */
+    .rates-footer {
+      margin-top: 60px; text-align: center; font-size: 11px;
+      color: var(--text-muted); opacity: 0.5; padding-top: 20px; border-top: 1px solid var(--border-subtle);
+    }
+    .signature { margin-top: 3px; text-align: center; }
+    .signature-text { font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--cyan); }
+    .footnote { margin-top: 32px; font-size: 11.5px; color: var(--text-muted); background: var(--bg-surface); border-left: 2px solid var(--with); padding: 14px 18px; border-radius: 0 var(--card-radius) var(--card-radius) 0; }
+
+    @media (max-width: 800px) {
+      .cols3, .hrow { grid-template-columns: 1fr !important; }  
+      .compare-grid { grid-template-columns: 1fr; }
+      .top-nav { flex-direction: column; gap: 12px;}
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="top-nav">
+  <div class="nav-links">
+    <a href="#cortos">Videos Cortos</a>
+    <a href="#podcast">Podcast</a>
+	<a href="#corporativos">Corporativos</a>
+    <a href="#youtube">YouTube</a>
+    <a href="#elearning">E-Learning IA</a>
+  </div>
+  <div class="currency-selector">
+    <button class="currency-btn active" data-cur="EUR">EUR</button>
+    <button class="currency-btn" data-cur="USD">USD</button>
+    <button class="currency-btn" data-cur="COP">COP</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <header class="hero">
+    <div class="logo-slot"><img src="https://ci3.googleusercontent.com/mail-sig/AIorK4ybIoLYO777brM54WAEfpvRwbdmDU7VMUE-ZOqDAv8iEtdoyRgW1KNQCRsgeYDWcvR-rJ3BQd6seW_2" alt="Laureano" style="width:80px; height:auto;" /></div>
+    <p class="hero-eyebrow">AI Video Editor &amp; Motion Designer</p>
+    <span class="hero-title-line"></span>
+    <p class="hero-sub"><a href="https://www.instagram.com/laureano099/">INSTRAGRAM</a> - <a href="https://www.tiktok.com/@estela.visual">TIKTOK</a> - <a href="https://www.linkedin.com/in/laureano099/">LINKEDING</a></p>
+  </header>
+
+  <section id="cortos">
+    <h2 class="section-label">Videos para redes sociales</h2>
+    <div class="cols3">
+      
+      <div class="col c1">
+        <div class="col-header">
+          <div class="col-accent-bar"></div>
+          <div class="col-header-top"><h3 class="col-title">Edición básica</h3><span class="badge badge-type">Estándar</span></div>
+          <p class="col-desc">Corte limpio, ritmo, música y subtítulos. Lo esencial para publicar con calidad.</p>
+			<a href="TU_LINK_PREVIEW" target="_blank" class="preview-btn">Ver preview</a>
+			
+        </div>
+        <div class="card">
+          <div class="card-top"><span class="card-name">Valor por unidad</span></div>
+          <div class="dyn-price" data-eur-lo="33" data-eur-hi="33"></div>
+          <hr class="card-divider" />
+          <ul class="features">
+            <li><span class="feat-check">✓</span>Corte y ritmo narrativo</li>
+            <li><span class="feat-check">✓</span>Música y diseño de sonido</li>
+            <li><span class="feat-check">✓</span>Subtítulos con animación sencilla</li>
+			<li><span class="feat-check">✓</span>Mejoras de material - IA</li>
+            <li><span class="feat-check">✓</span>1 ronda de revisión</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col c2">
+        <div class="col-header">
+          <div class="col-accent-bar"></div>
+          <div class="col-header-top"><h3 class="col-title">Edición + IA</h3>
+          <span class="badge badge-type">IA incluida</span></div>
+          <p class="col-desc">Todo lo básico más recusos unicos generados con IA assets, voces, efectos.</p>
+			<a href="TU_LINK_PREVIEW" target="_blank" class="preview-btn">Ver preview</a>
+        </div>
+        <div class="card">
+          <div class="card-top"><span class="card-name">Valor por unidad</span></div>
+          <div class="dyn-price" data-eur-lo="40" data-eur-hi="40"></div>
+          <hr class="card-divider" />
+          <ul class="features">
+            <li><span class="feat-check">✓</span>Todo lo básico</li>
+            <li><span class="feat-check">✓</span>Assets exclusivos generados con IA</li>
+            <li><span class="feat-check">✓</span>Mejoras de material - IA</li>
+			
+            <li><span class="feat-check">✓</span>1 ronda de revisión</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col c3">
+        <div class="col-header">
+          <div class="col-accent-bar"></div>
+          <div class="col-header-top"><h3 class="col-title">Graficación</h3>
+          <span class="badge badge-type">Premium</span></div>
+          <p class="col-desc">Motion graphics y animaciones avanzadas para videos con identidad visual fuerte.</p>
+		<a href="TU_LINK_PREVIEW" target="_blank" class="preview-btn">Ver preview</a>
+        </div>
+        <div class="card">
+          <div class="card-top"><span class="card-name">Valor por unidad</span></div>
+          <div class="dyn-price" data-eur-lo="52" data-eur-hi="52"></div>
+          <hr class="card-divider" />
+          <ul class="features">
+            <li><span class="feat-check">✓</span>Todo lo básico</li>
+            <li><span class="feat-check">✓</span>Motion graphics</li>
+            <li><span class="feat-check">✓</span>Animaciones avanzadas</li>
+            <li><span class="feat-check">✓</span>Ronda de revisiones ILIMITADA</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="packs" style="margin-top: 60px;">
+    <h2 class="section-label">Packs de videos</h2>
+    <div class="cols3">
+      
+      <div class="col c1">
+        <div class="card"><span class="qty-label">4 videos</span>
+        <div class="card-top"><span class="card-name">Esencial</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="132"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+		  <div class="dyn-price" data-eur-lo="120" data-eur-hi="120"></div></div>
+        <div class="card"><span class="qty-label">8 videos</span>
+        <div class="card-top"><span class="card-name">Expansión</span>
+			<span class="badge badge-type">Más popular</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="264"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="224" data-eur-hi="224"></div></div>
+        <div class="card"><span class="qty-label">+ 12 videos</span>
+        <div class="card-top"><span class="card-name">Avanzado</span></div>
+				<div class="original-price dyn-original"
+				 data-eur-original="396"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="300" data-eur-hi="300"></div></div>
+      </div>
+
+      <div class="col c2">
+        <div class="card"><span class="qty-label">4 videos</span>
+        <div class="card-top"><span class="card-name">Esencial IA</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="160"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="152" data-eur-hi="152"></div></div>
+        <div class="card"><span class="qty-label">8 videos</span>
+        <div class="card-top"><span class="card-name">Expansión IA</span><span class="badge badge-type">Más popular</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="320"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="280" data-eur-hi="280"></div></div>
+        <div class="card"><span class="qty-label">+ 12 videos</span>
+        <div class="card-top"><span class="card-name">Avanzado  IA</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="480"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="360" data-eur-hi="360"></div></div>
+      </div>
+
+      <div class="col c3">
+        <div class="card"><span class="qty-label">4 videos</span>
+			<div class="card-top"><span class="card-name">Esencial</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="208"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="200" data-eur-hi="200"></div></div>
+		  
+        <div class="card"><span class="qty-label">8 videos</span>
+        <div class="card-top"><span class="card-name">Expansión</span><span class="badge badge-type">Más popular</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="416"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="384" data-eur-hi="384"></div>
+		  </div>
+        <div class="card"><span class="qty-label">+ 12 videos</span>
+        <div class="card-top"><span class="card-name">Avanzado</span></div>
+			<div class="original-price dyn-original"
+				 data-eur-original="624"> /////////*AJUSTES DE PRECIO MANUAL*/////////
+			</div>
+			<div class="dyn-price" data-eur-lo="564" data-eur-hi="564"></div></div>
+      </div>
+		
+    </div>
+	    <p class="footnote">
+    Todos los packs incluyen <strong>1 ronda de revisión por video</strong>. Revisiones adicionales: +€5/video.
+  </p>
+	  
+  </section>
+
+  <section id="podcast" class="hblock hb-podcast">
+    <div class="hblock-header">
+      <div class="hblock-accent-bar"></div>
+      <div class="hblock-titles">
+        <h2 class="hblock-title">Edición de Podcast</h2>
+        <p class="hblock-desc">Video podcast con presencia visual profesional — precios por episodio según duración y complejidad.</p>
+      </div>
+      <span class="badge badge-type">Podcast</span>
+    </div>
+    
+    <div class="hrow" style="grid-template-columns: repeat(4, 1fr);">
+      
+      <div class="hcard"><div class="card-top"><span class="card-name" style="font-size:14px;">1 Cámara</span></div><span class="hcard-duration">Hasta 60 min</span>
+      <div class="dyn-price" data-eur-lo="80" data-eur-hi="80"></div><hr class="card-divider" style="margin:8px 0;"/><ul class="hcard-features">
+	<li><span class="feat-check">✓</span>Cortes y ritmo dinámico</li>
+      <li><span class="feat-check">✓</span>Cambios de encuadre</li>
+      <li><span class="feat-check">✓</span>Corrección  de audio</li>
+      </ul></div>
+      
+      <div class="hcard"><div class="card-top"><span class="card-name" style="font-size:14px;">2 Cámaras</span></div><span class="hcard-duration">Hasta 100 min</span>
+        <div class="dyn-price" data-eur-lo="110" data-eur-hi="110"></div><hr class="card-divider" style="margin:8px 0;"/><ul class="hcard-features"><li><span class="feat-check">✓</span>Cortes y ritmo dinámico</li><li><span class="feat-check">✓</span>Cambios de cámaras</li>
+      <li><span class="feat-check">✓</span>Ritmo visual profesional</li><li><span class="feat-check">✓</span>Corrección de audio</li>
+      </ul></div>
+      
+      
+      <div class="hcard"><div class="card-top"><span class="card-name" style="font-size:14px;">3 Cámaras</span></div><span class="hcard-duration">Hasta 100 min</span>
+      <div class="dyn-price" data-eur-lo="170" data-eur-hi="170"></div><hr class="card-divider" style="margin:8px 0;"/><ul class="hcard-features"><li><span class="feat-check">✓</span>Cortes y ritmo dinámico</li><li><span class="feat-check">✓</span>Cambios de cámaras</li>
+      <li><span class="feat-check">✓</span>Ritmo visual profesional</li><li><span class="feat-check">✓</span>Corrección de audio</li></ul></div>
+      
+      <div class="hcard quote">
+        <span class="card-name" style="font-size: 15px; margin-bottom:8px;">Cotización Personalizada</span>
+        <p class="hcard-tagline" style="margin:0;">Más de 3 Cámaras, proyectos más de 100 min o con características especiales.</p>
+      </div>
+
+    </div>
+  </section>
+	
+	
+  <section id="corporativos" class="hblock hb-corporativo">
+    <div class="hblock-header">
+      <div class="hblock-accent-bar"></div>
+      <div class="hblock-titles">
+        <h2 class="hblock-title">Videos Corporativos</h2>
+        <p class="hblock-desc">Producciones enfocadas en comunicación empresarial, contenidos institucionales, alineada a la identidad de la marca.</p>
+      </div>
+      <span class="badge badge-type">Corporativo</span> </div>
+    <div class="hrow" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="hcard">
+        <div class="card-top"><span class="card-name" style="font-size:14px;">Desde</span></div>
+        <div class="dyn-price" data-eur-lo="100" data-eur-hi="100"></div>
+        <hr class="card-divider" style="margin:8px 0;"/>
+        <ul class="hcard-features">
+          <li><span class="feat-check">✓</span>Edición profesional</li>
+          <li><span class="feat-check">✓</span>Corrección  de audio</li>
+          <li><span class="feat-check">✓</span>Transiciones limpias y profesionales</li>
+          <li><span class="feat-check">✓</span>Adaptación al manual de marca (si aplica)</li>
+          <li><span class="feat-check">✓</span>1 ronda de revisión</li>
+
+		  </ul>
+      </div>
+		      <div class="hcard quote">
+
+        <p class="hcard-tagline" style="margin-bottom: 20px;"><br>
+          Precio base para proyectos corporativos convencionales. <br>
+          Los proyectos que requieran un nivel superior de producción, animación o personalización serán evaluados y cotizados de forma independiente.</p>
+        <hr class="card-divider" style="width:100%;">
+        <p class="hcard-tagline" style="font-size: 11px;"><strong>¿Quieres ver cómo luce el resultado final?</strong></p>
+        <a href="https://www.youtube.com." target="_blank" class="btn-youtube">▶ Ver Demo en YouTube</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="youtube" class="hblock hb-youtube">
+    <div class="hblock-header">
+      <div class="hblock-accent-bar"></div>
+      <div class="hblock-titles">
+        <h2 class="hblock-title">Edición para YouTube</h2>
+        <p class="hblock-desc">Desde cortes limpios hasta producciones completas con diseño sonoro, motion graphics y recursos potenciados por IA.</p>
+      </div>
+      <span class="badge badge-type">YouTube</span>
+    </div>
+    
+    <div class="hrow" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="hcard"><div class="card-top"><span class="card-name">Corte de Stream</span></div><span class="hcard-duration">DEPURACIÓN DE CONTENIDO</span>
+      <p class="hcard-tagline">Transformación de transmisiones extensas en una versión limpia y condensada, eliminando tiempos muertos y conservando los momentos más relevantes.</p>
+      <div class="dyn-price" data-eur-lo="34" data-eur-hi="43"></div></div>
+      <div class="hcard"><div class="card-top"><span class="card-name">Video YouTube</span></div><span class="hcard-duration">Producción completa</span><p class="hcard-tagline">Desde el material bruto hasta el video final: estructura narrativa, diseño sonoro, dinamismo visual y acabados profesionales listos para publicación.</p>
+      <div class="dyn-price" data-eur-lo="140" data-eur-hi="180"></div></div>
+      <div class="hcard"><div class="card-top"><span class="card-name">Vlog + IA</span></div><span class="hcard-duration">Workflow Premium</span><p class="hcard-tagline">Edición de alto nivel , recursos visuales e integraciones de IA para reforzar explicaciones, enriquecer la narrativa y mejorar la retención de la audiencia.</p>
+      <div class="dyn-price" data-eur-lo="190" data-eur-hi="210"></div></div>
+    </div>
+	  
+	 <p class="footnote">
+		 
+    • El valor final puede variar según la complejidad visual, nivel de edición y referencias proporcionadas por el cliente. <br>
+    • Para una cotización precisa, se recomienda compartir ejemplos o referencias del resultado esperado. <br>
+    • Tarifas aplicables para videos finales a partir de 30 minutos de duración.</p>
+	  
+  </section>
+
+  <section id="elearning" class="hblock hb-elearn">
+    <div class="hblock-header">
+      <div class="hblock-accent-bar"></div>
+      <div class="hblock-titles">
+        <h2 class="hblock-title">Video E-Learning IA</h2>
+        <p class="hblock-desc">Cursos y videos corporativos listos para publicar sin necesidad de grabaciones, cámara o preparar un estudio.</p>
+      </div>
+      <span class="badge badge-type"> PRODUCCIÓN DIGITAL </span>
+    </div>
+    
+    <div class="hrow" style="grid-template-columns: 2fr 1fr;">
+      
+      <div class="hcard">
+        <div class="card-top"><span class="card-name">Producción integral</span></div>
+        <p class="hcard-tagline">Transformamos tu contenido en un video profesional listo para publicar, combinando narración, recursos visuales, diseño gráfico y tecnologías avanzadas de producción digital.</p>
+        
+        <div class="compare-grid">
+          <div class="compare-col">
+            <h4>Lo que NO necesitas entregar</h4>
+            <ul>
+              <li><span class="icon-no">✕</span> No requiere grabaciones de video</li>
+              <li><span class="icon-no">✕</span> No requieres equipos, cámaras o iluminación</li>
+			 <li><span class="icon-no">✕</span> No requieres presentadores o actores</li>	
+              <li><span class="icon-no">✕</span> No asumes errores de dicción</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>Lo que nosotros entregamos</h4>
+            <ul>
+              <li><span class="icon-yes">✓</span> Presentador profesional</li>
+              <li><span class="icon-yes">✓</span> Narración con calidad de estudio</li>
+              <li><span class="icon-yes">✓</span> Recursos visuales y gráficos de apoyo</li>
+              <li><span class="icon-yes">✓</span> Identidad visual alineada a tu marca</li>
+            </ul>
+          </div>
+        </div>
+        <span class="qty-label" style="color: var(--text-muted);"><strong>⚠️ El único insumo indispensable es tu texto, guion o presentación.</strong></span>
+      </div>
+
+      <div class="hcard quote">
+        <span class="card-name" style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">Cotización Personalizada</span>
+        <p class="hcard-tagline" style="margin-bottom: 20px;">El valor se calcula según la duración final del video, el nivel de graficación y los recursos visuales requeridos.</p>
+        <hr class="card-divider" style="width:100%;">
+        <p class="hcard-tagline" style="font-size: 11px;"><strong>¿Quieres ver cómo luce el resultado final?</strong></p>
+        <a href="https://www.youtube.com/watch?v=updTsF9k8y0" target="_blank" class="btn-youtube">▶ Ver Demo en YouTube</a>
+      </div>
+
+    </div>
+  </section>
+
+	<section class="brands-section">
+
+  <h2 class="brands-title">Marcas con las que he trabajado<br>
+  </h2>
+		
+
+  <div class="brands-slider">
+    <div class="brands-track">
+
+      <!-- ===== LOGOS ===== -->
+
+      <div class="brand-item"><img src="logo1.png" alt=""></div>
+      <div class="brand-item"><img src="logo2.png" alt=""></div>
+      <div class="brand-item"><img src="logo3.png" alt=""></div>
+
+
+      <!-- DUPLICADO PARA LOOP INFINITO -->
+      <div class="brand-item"><img src="logo1.png" alt=""></div>
+      <div class="brand-item"><img src="logo2.png" alt=""></div>
+      <div class="brand-item"><img src="logo3.png" alt=""></div>
+
+    </div>
+  </div>
+
+</section>
+	
+	  <footer class="signature">
+    <p class="signature-text">Gracias por creer en lo que soy capaz de crear</p>
+  </footer>
+	
+	
+  <div class="rates-footer">
+    Tasas de referencia técnica: 
+    <span id="txt-rate-usd"></span> | 
+    <span id="txt-rate-cop"></span>
+  </div>
+
+
+
+</div>
+
+<script>
+  /////////////////////////////////////////////////////// Constantes de mercado
+  const RATES = { EUR: 1, USD: 1.165, COP: 4090 };
+  const SYMBOLS = { EUR: '€', USD: '$', COP: '$' };
+
+  // Footer rates
+  document.getElementById('txt-rate-usd').textContent = `1 EUR = ${RATES.USD} USD`;
+  document.getElementById('txt-rate-cop').textContent = `1 EUR = ${RATES.COP.toLocaleString('es-CO')} COP`;
+
+  let currentCurrency = 'EUR';
+  const fmt = (n, dec = 0) => n.toLocaleString('es-CO', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+
+  function formatValue(value, currency) {
+    if (currency === 'EUR') return `${SYMBOLS.EUR}${fmt(value)}`;
+    if (currency === 'USD') return `${SYMBOLS.USD}${fmt(Math.round(value * RATES.USD))} USD`;
+    if (currency === 'COP') {
+      const copValue = Math.round((value * RATES.COP) / 1000) * 1000;
+      return `${SYMBOLS.COP}${fmt(copValue / 1000)}k COP`;
+    }
+  }
+
+					function updateOriginalPrices() {
+
+				  document.querySelectorAll('.dyn-original').forEach(el => {
+
+					const value = parseFloat(el.dataset.eurOriginal);
+
+					el.textContent = formatValue(value, currentCurrency);
+
+				  });
+
+				}
+					function updateOriginalPrices() {
+
+				  document.querySelectorAll('.dyn-original').forEach(el => {
+
+					const value = parseFloat(el.dataset.eurOriginal);
+
+					el.textContent = formatValue(value, currentCurrency);
+
+				  });
+
+				}
+	
+	
+	
+	
+	
+  function getPriceString(lo, hi, currency) {
+    if (lo === hi) return formatValue(lo, currency);
+    return `${formatValue(lo, currency)}–${formatValue(hi, currency)}`;
+  }
+
+  function updatePricesUI() {
+    const pricesBoxes = document.querySelectorAll('.dyn-price');
+	  
+	  updateOriginalPrices();
+    
+    pricesBoxes.forEach(box => {
+      const lo = parseFloat(box.dataset.eurLo);
+      const hi = parseFloat(box.dataset.eurHi);
+      
+      // Crear estructura si no existe
+      if (!box.hasChildNodes()) {
+        box.innerHTML = `<div class="price-main"></div><div class="price-alts"></div>`;
+      }
+
+      const mainEl = box.querySelector('.price-main');
+      const altsEl = box.querySelector('.price-alts');
+      
+      mainEl.textContent = getPriceString(lo, hi, currentCurrency);
+      
+      altsEl.innerHTML = '';
+      ['EUR', 'USD', 'COP'].forEach(cur => {
+        if (cur !== currentCurrency) {
+          const span = document.createElement('span');
+          span.textContent = getPriceString(lo, hi, cur);
+          altsEl.appendChild(span);
+        }
+      });
+    });
+  }
+
+  // Event Listeners botones
+  document.querySelectorAll('.currency-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentCurrency = e.target.dataset.cur;
+      updatePricesUI();
+    });
+  });
+
+  // Init
+  updatePricesUI();
+</script>
+
+</body>
+</html>
